@@ -14,12 +14,11 @@
 #include <stdlib.h>
 #include<stdio.h>
 #include <GL/glut.h>
+#define LEVELS 8
+
 void DesenhaObstaculos();
 void DesenhaPlayer();
 int colidiu();
-// Função callback de redesenho da janela de visualização
-
-#define LEVELS 8
 
 typedef struct {
    int x1;
@@ -34,6 +33,8 @@ typedef struct {
 
 Player player;
 Obstaculo obstaculos[LEVELS/2];
+float CorObstaculo[3] = { 0, 0, 1};
+float CorPlayer[3] = { 1, 0, 0};
 
 void inicializaObstaculos() {
 	int xs[LEVELS] = {
@@ -61,50 +62,9 @@ void inicializaPlayer() {
 
 void Desenha(void)
 {
-	// Limpa a janela de visualização com a cor  
-	// de fundo definida previamente
 	glClear(GL_COLOR_BUFFER_BIT);
-
-	// Desenha uma casinha composta de um quadrado e um triângulo
-
-	// Altera a cor do desenho para azul
 	DesenhaObstaculos();
 	DesenhaPlayer();
-
-	// Altera a cor do desenho para branco
-//	glColor3f(1.0f, 1.0f, 1.0f);  
-//	// Desenha a porta e a janela  
-//	glBegin(GL_QUADS);
-//		glVertex2f(-4.0f,-14.5f);
-//		glVertex2f(-4.0f,  0.0f);       
-//		glVertex2f( 4.0f,  0.0f);       
-//		glVertex2f( 4.0f,-14.5f);       
-//		glVertex2f( 7.0f,-5.0f);
-//		glVertex2f( 7.0f,-1.0f);       
-//		glVertex2f(13.0f,-1.0f);       
-//		glVertex2f(13.0f,-5.0f);             
-//	glEnd();
-//
-//	// Altera a cor do desenho para azul
-//	glColor3f(0.0f, 0.0f, 1.0f);     
-//	// Desenha as "linhas" da janela  
-//	glBegin(GL_LINES);      
-//		glVertex2f( 7.0f,-3.0f);      
-//		glVertex2f(13.0f,-3.0f);       
-//		glVertex2f(10.0f,-1.0f);    
-//		glVertex2f(10.0f,-5.0f);             
-//	glEnd();    
-//
-//	// Altera a cor do desenho para vermelho
-//	glColor3f(1.0f, 0.0f, 0.0f); 
-//	// Desenha o telhado
-//	glBegin(GL_TRIANGLES);
-//		glVertex2f(-15.0f, 5.0f);   
-//		glVertex2f(  0.0f,17.0f);    
-//		glVertex2f( 15.0f, 5.0f);       
-//	glEnd();
-// 
-	// Executa os comandos OpenGL 
 	glFlush();
 }
 
@@ -114,14 +74,13 @@ void DesenhaObstaculos() {
 	int x2;
 	int i;
 	int y;
-	glColor3f(0.0f, 0.0f, 1.0f);     
+	glColor3f(CorObstaculo[0], CorObstaculo[1], CorObstaculo[2]);     
 	
 	for (i=0; i<LEVELS/2; i++){
 		level = i * 2 + 1;
 		y = level * 5;
 		x1 = obstaculos[i].x1;
 		x2 = obstaculos[i].x2;
-		printf("%d %d\n", x1, x2);
 		glBegin(GL_QUADS);
 			glVertex2f(x1, y);
 			glVertex2f(x1, y + 5);       
@@ -138,7 +97,7 @@ void DesenhaObstaculos() {
 
 void DesenhaPlayer() {
 	
-	glColor3f(1.0f, 0.0f, 0.0f);     
+	glColor3f(CorPlayer[0], CorPlayer[1], CorPlayer[2]);     
 	
 	glBegin(GL_QUADS);
 		glVertex2f(player.x, player.y);
@@ -151,44 +110,34 @@ void DesenhaPlayer() {
 // Função callback chamada quando o tamanho da janela é alterado 
 void AlteraTamanhoJanela(GLsizei w, GLsizei h)
 {
-	GLsizei largura, altura;
 
-	// Evita a divisao por zero
-	if(h == 0) h = 1;
-
-	// Atualiza as variáveis
-	largura = w;
-	altura = h;
-
-	// Especifica as dimensões da Viewport
-	glViewport(0, 0, largura, altura);
+	glViewport(0, 0, w, h);
 
 	// Inicializa o sistema de coordenadas
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
 	// Estabelece a janela de seleção (esquerda, direita, inferior, 
-	// superior) mantendo a proporção com a janela de visualização
-	if (largura <= altura) 
-		gluOrtho2D (0.0f, 120.0f, 0.0f*altura/largura, 40.0f*altura/largura);
-	else 
-		gluOrtho2D (0.0f*largura/altura, 120.0f*largura/altura, 0.0f, 40.0f);
+	// superior)
+	gluOrtho2D (0.0f, 120.0f, 0.0f, 40.0f);
 }
 
+void alerta(char* mensagem, char * titulo) {
+	MessageBox(NULL, mensagem, titulo,  MB_OK);
+}
 // Função callback chamada para gerenciar eventos de teclas
 void moves (int key, int x, int y)
 {
 		
 	switch(key) {
 		case GLUT_KEY_UP: 
-			printf("cima");
-			if (player.y < 40){
-				player.y += 5;
+			player.y += 5;
+			if (player.y > 35){
+				alerta("YOU WON!!", ":)");
+				exit(0);
 			}
-			printf("%d \n", player.y);
 			break;
 		case GLUT_KEY_DOWN: 
-			printf("baixo");
 			if (player.y > 0){
 				player.y -= 5;
 			}
@@ -210,9 +159,8 @@ void moves (int key, int x, int y)
 	if (colidiu()) {
 		resetPlayerPosition();
 		player.lives--;
-		printf("vidas :%d\n", player.lives);
 		if (!player.lives){
-			printf("morreu de verdade agora!!");
+			alerta("GAME OVER", ":(");
 			exit(0);
 		}
 	}
@@ -220,10 +168,26 @@ void moves (int key, int x, int y)
 }
 
 void Mouse(int button, int state,int x, int y){
-    if(button == GLUT_RIGHT_BUTTON){
-        glClearColor(rand()/(float)RAND_MAX,rand()/(float)RAND_MAX,rand()/(float)RAND_MAX, 1.0f);
-        glutPostRedisplay();
+	int level = y/5;
+	float vermelho = rand()/(float)RAND_MAX;
+	float verde = rand()/(float)RAND_MAX;
+	float azul = rand()/(float)RAND_MAX;
+
+    if(button != GLUT_RIGHT_BUTTON){
+        return;
     }
+    
+    
+    CorObstaculo[0] = vermelho;
+	CorObstaculo[1] = verde;
+	CorObstaculo[2] = azul;
+	CorPlayer[0] = verde;
+	CorPlayer[1] = azul;
+	CorPlayer[2] = vermelho;
+	
+	glClearColor(azul, vermelho, verde, 1.0f);				
+	
+	glutPostRedisplay();
 }
 
 int colidiu()
@@ -233,18 +197,12 @@ int colidiu()
 		return 0;
 	}
 	
-	if ((obstaculos[level/2].x1 > player.x) || (obstaculos[level/2].x2 < player.x + 5)){
-		printf("bagaçou tudo\n");
-		return 1;
-	}
-
-	return 0;
+	return((obstaculos[level/2].x1 > player.x) || (obstaculos[level/2].x2 < player.x + 5));
 }
 
 
 void teclado (unsigned char key, int x, int y)
 {
-		
 	if (key == 27)
 		exit(0);
 }
@@ -272,7 +230,7 @@ int main(void)
  	gluOrtho2D (0.0f, 40.0f, 0.0f, 40.0f);
  
 	// Cria a janela passando como argumento o título da mesma
-	glutCreateWindow("Desenho de uma casa");
+	glutCreateWindow("Labirintoo");
 
 	// Registra a função callback de redesenho da janela de visualização
 	glutDisplayFunc(Desenha);
