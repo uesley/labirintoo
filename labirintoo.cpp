@@ -1,15 +1,3 @@
-//*****************************************************
-//
-// Casa.cpp 
-// Um programa OpenGL simples que abre uma janela GLUT 
-// e desenha uma casa.
-//
-// Marcelo Cohen e Isabel H. Manssour
-// Este código acompanha o livro 
-// "OpenGL - Uma Abordagem Prática e Objetiva"
-// 
-//*****************************************************
-
 #include <windows.h>
 #include <stdlib.h>
 #include<stdio.h>
