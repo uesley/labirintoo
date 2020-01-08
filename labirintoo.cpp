@@ -1,12 +1,19 @@
 #include <windows.h>
 #include <stdlib.h>
-#include<stdio.h>
+#include <stdio.h>
+#include <time.h>
 #include <GL/glut.h>
-#define LEVELS 8
+#define FAIXAS 8
 
 void DesenhaObstaculos();
 void DesenhaPlayer();
 int colidiu();
+void inicializaPlayer();
+void inicializaTraffics();
+void inicializaObstaculos();
+
+
+int holes = 2;
 
 typedef struct {
    int x1;
@@ -19,32 +26,64 @@ typedef struct {
    int lives; 	
 } Player;
 
+typedef struct {
+	int spaces;
+	int speed;
+	int direction;
+	Obstaculo obstaculos *;
+} Traffic;
+
+typedef struct {
+	int level;
+	Traffic traffics[FAIXAS/2];
+	Player player;
+} Game;
+
 Player player;
-Obstaculo obstaculos[LEVELS/2];
+Game game;
+
+Obstaculo obstaculos[FAIXAS/2];
 float CorObstaculo[3] = { 0, 0, 1};
 float CorPlayer[3] = { 1, 0, 0};
 
-void inicializaObstaculos() {
-	int xs[LEVELS] = {
-		5,15,
-		115,120,
-		0,10,
-		18, 25,
-		};
+
+void inicializaGame() {
+	game.level = 1;
+	inicializaPlayer();
+	inicializaTraffics();
+}
+
+void incializaTraffics() {
 	int i;
-	for (i =0; i< LEVELS/2; i++ ) {
+	for (i = 0; i < FAIXAS/2; i ++) {
+		game.traffics[i].spaces = 1 + rand() % 5;
+		game.traffics[i].speed = game.level * 2 * (1 + rand() % 20) ;
+		game.traffics[i] = malloc(sizeof(Obstaculo) );
+	}
+}
+
+void inicializaObstaculos() {
+	int xs[FAIXAS];
+	int i;
+	srand(time(NULL));
+	for (i = 0; i <= FAIXAS; i+=2) {
+		xs[i] = rand() % 120;
+		xs[i+1] = xs[i] + 15;
+	}
+	
+	for (i = 0; i< FAIXAS/2; i++ ) {
 		obstaculos[i].x1 =xs[i*2];
 		obstaculos[i].x2 = xs [i*2+1];
 	}
 }
 
 void resetPlayerPosition() {
-	player.x = 60;
-	player.y = 0;
+	game.player.x = 60;
+	game.player.y = 0;
 }
 
 void inicializaPlayer() {
-	player.lives = 3;
+	game.player.lives = 3;
 	resetPlayerPosition();
 }
 
@@ -64,7 +103,7 @@ void DesenhaObstaculos() {
 	int y;
 	glColor3f(CorObstaculo[0], CorObstaculo[1], CorObstaculo[2]);     
 	
-	for (i=0; i<LEVELS/2; i++){
+	for (i=0; i<FAIXAS/2; i++){
 		level = i * 2 + 1;
 		y = level * 5;
 		x1 = obstaculos[i].x1;
@@ -201,9 +240,29 @@ void Inicializa (void)
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
+void timer(int value) {
+	int i;
+	for (i =0; i< FAIXAS/2; i++ ) {
+		obstaculos[i].x1 = (obstaculos[i].x1 + 5 + 4*i) % 120;
+		obstaculos[i].x2 = (obstaculos[i].x2 + 5 + 4*i) % 120;
+	}
+	
+	glutPostRedisplay();
+	glutTimerFunc(500, timer, value++);
+	if (colidiu()) {
+		resetPlayerPosition();
+		player.lives--;
+		if (!player.lives){
+			alerta("GAME OVER", ":(");
+			exit(0);
+		}
+	}
+}
+
+
 // Programa Principal 
 int main(void)
-{
+{	
 	inicializaObstaculos();
 
 	inicializaPlayer();	
@@ -228,9 +287,12 @@ int main(void)
 
 	// Registra a função callback para tratamento das teclas ASCII
 	glutMouseFunc(Mouse);
+	
 	glutSpecialFunc(moves);
 
-	glutKeyboardFunc (teclado);    
+	glutKeyboardFunc (teclado);   
+	
+	glutTimerFunc(500, timer, 1); 
 	// Chama a função responsável por fazer as inicializações 
 	Inicializa();
 
