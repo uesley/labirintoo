@@ -8,6 +8,7 @@
 /// COLORS
 float CorObstaculo[3] = { 0, 0, 1};
 float CorPlayer[3] = { 1, 0, 0};
+Game game;
 
 void desenha_retangulo(int x1, int x2, int y)
 {
@@ -23,7 +24,7 @@ void set_color(float color[3]) {
 //    glColor3f(color[0], color[1], color[2]);
 }
 
-void desenha_cenario(Traffic traffics, int tam)
+void desenha_cenario(Traffic * traffics, int tam)
 {
     int i;
     int j;
@@ -46,8 +47,8 @@ void desenha_player(Player player) {
 void Desenha()
 {
 //    glClear(GL_COLOR_BUFFER_BIT);
-    desenha_cenario();
-    desenha_player();
+    desenha_cenario(game.traffics, 4);
+    desenha_player(game.player);
 //    glFlush();
 }
 
@@ -70,36 +71,18 @@ void Desenha()
 //	MessageBox(NULL, mensagem, titulo,  MB_OK);
 //}
 
-//// Fun��o callback chamada para gerenciar eventos de teclas
-//void moves (int key, int x, int y)
-//{
-//		
-//	switch(key) {
-//		case GLUT_KEY_UP: 
-//			player.y += 5;
-//			if (player.y > 35){
-//				alerta("YOU WON!!", ":)");
-//				exit(0);
-//			}
-//			break;
-//		case GLUT_KEY_DOWN: 
-//			if (player.y > 0){
-//				player.y -= 5;
-//			}
-//			break;
-//		case GLUT_KEY_LEFT: 
-//			if (player.x > 0) { 
-//				player.x -= 5;
-//			}
-//			break;
-//		case GLUT_KEY_RIGHT: 
-//			if (player.x < 115) { 
-//				player.x += 5;
-//			}
-//			break;
-//		case 27:
-//			exit(0);
-//	}	
+// Fun��o callback chamada para gerenciar eventos de teclas
+void moves (int key, int x, int y)
+{
+    FunctionMove function_move[4] = {
+        move_player_left,
+        move_player_up,
+        move_player_right,
+        move_player_down
+    };
+
+    (*(function_move[key - GLUT_KEY_LEFT]))(&game.player);
+    	
 //	Desenha();
 //	if (colidiu()) {
 //		resetPlayerPosition();
@@ -110,7 +93,7 @@ void Desenha()
 //		}
 //	}
 //	Desenha();
-//}
+}
 
 //void Mouse(int button, int state,int x, int y){
 //	int level = y/5;
@@ -160,13 +143,26 @@ void Desenha()
 
 // Programa Principal 
 
-Game game;
 
 int main()
 {
     new_Game(&game);
     
-//    describe_player(game.player);
+    describe_player(game.player);
+    moves(0,0,0);
+    describe_player(game.player);
+    
+    moves(2,0,0);
+    describe_player(game.player);
+    
+    moves(1,0,0);
+    describe_player(game.player);
+    
+    moves(3,0,0);
+    describe_player(game.player);
+    
+    
+    
 //    describe_scenario(game);
     
     

@@ -1,12 +1,16 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#define PLAYER_STEP 5
+
 typedef struct {
     int x; // posição horizontal do jogador
     int y; // posição vertical do jogador
     int lives; // quantidade de vidas restantes
 } Player;
 
+
+typedef int (*FunctionMove) (Player * player);
 
 // Inicia 
 void new_Player(Player *);
@@ -16,12 +20,6 @@ int reset_position_player(Player *);
 
 // Diminui a quantidade de vidas e retorna a quantidade restante
 int die(Player * player);
-
-// Controla as coordenadas do jogador ao se mover
-int move_player(Player * player, int step_up, int step_down, int step_right, int step_left);
-
-
-
 
 void new_Player(Player * player)
 {
@@ -35,17 +33,26 @@ int reset_position_player(Player * player)
     player->y = 0;
 }
 
-
 int die(Player * player)
 {
     player->lives --;
     return player->lives;
 }
 
-int move_player(Player * player, int step_up, int step_down, int step_right, int step_left)
-{
-    player->y += step_up - step_down;
-    player->x += step_right - step_left; 
+int move_player_up(Player * player) {
+    player->y = player->y + PLAYER_STEP;
+}
+
+int move_player_down(Player * player) {
+    player->y = player->y - PLAYER_STEP;
+}
+
+int move_player_left(Player * player) {
+    player->x = player->x - PLAYER_STEP;
+}
+
+int move_player_right(Player * player) {
+    player->x = player->x + PLAYER_STEP;
 }
 
 void describe_player(Player player)
