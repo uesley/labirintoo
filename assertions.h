@@ -33,5 +33,13 @@ void assertGreaterThan(int expected, int value) {
     printf(".");
 }
 
+void assertLessThan(int expected, int value) {
+    if (value >= expected) {
+        printf(", esperado menor que %d, encontrado: %d", expected, value);
+        exit(1);
+    }
+    printf(".");
+}
+
 #endif /* ASSERTIONS_H */
 

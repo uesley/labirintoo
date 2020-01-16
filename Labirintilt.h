@@ -46,6 +46,11 @@ void move_scenario(Game * game, int speed_min)
         for (j = 0; j < game->traffics[i].num_spaces; j++) {
             game->traffics[i].spaces[j].x_start++;
             game->traffics[i].spaces[j].x_final++;
+            if (game->traffics[i].spaces[j].x_start >= 120) {
+                int pos = rand() % (120 / game->traffics[i].num_spaces);
+                game->traffics[i].spaces[j].x_final = -1 * pos;
+                game->traffics[i].spaces[j].x_start =  -1 * (pos +15);
+            }
         }
     }
     speed_min = (speed_min++) % 5;

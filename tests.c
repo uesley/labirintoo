@@ -33,7 +33,7 @@ int main ()
     test_move_player();
     test_move_scenario();
     test_survive();
-//    test_creation_new_spaces();
+    test_creation_new_spaces();
 }
 
 void test_create_player()
@@ -226,4 +226,21 @@ void test_survive()
     assertEquals(0, game.player.lives);
     
     printf("Survive OK\n");
+}
+
+void test_creation_new_spaces()
+{
+    Game original;
+    Game * game = &original;
+    new_Game(game);
+    
+    game->traffics[0].num_spaces = 1;
+    new_Space(&game->traffics[0].spaces[0], 119);
+    
+    move_scenario(game, 1);
+//    
+    assertLessThan(0, game->traffics[0].spaces[0].x_final);
+    assertEquals(game->traffics[0].spaces[0].x_final - 15, game->traffics[0].spaces[0].x_start);
+    
+    printf("crete new spaces OK\n");
 }
