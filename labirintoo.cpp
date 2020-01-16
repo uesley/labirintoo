@@ -155,6 +155,19 @@ void moves (int key, int x, int y)
 	Desenha();
 }
 
+void Timer(int i) 
+{
+   int j;
+   for (j = 0; j < LEVELS/2; j++) {
+		obstaculos[j].x1 = obstaculos[j].x1 + 5 % 120;
+		obstaculos[j].x2 = obstaculos[j].x2 + 5 % 120;
+
+   }
+   
+   glutPostRedisplay();
+   glutTimerFunc( 500,Timer, i);
+}
+
 void Mouse(int button, int state,int x, int y){
 	int level = y/5;
 	float vermelho = rand()/(float)RAND_MAX;
@@ -229,7 +242,7 @@ int main(void)
 	// Registra a função callback para tratamento das teclas ASCII
 	glutMouseFunc(Mouse);
 	glutSpecialFunc(moves);
-
+    glutTimerFunc( 500,Timer, 1);
 	glutKeyboardFunc (teclado);    
 	// Chama a função responsável por fazer as inicializações 
 	Inicializa();
