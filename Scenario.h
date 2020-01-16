@@ -4,38 +4,39 @@
 typedef struct {
     int x_start;
     int x_final;
-} Obstacle;
+} Space;
 
-void new_Obstacle(Obstacle * obstacle, int x1, int x2);
+void new_Space(Space * space, int x1);
 
-void new_Obstacle(Obstacle * obstacle, int x1, int x2)
+void new_Space(Space * space, int x1)
 {
-    obstacle->x_start = x1;
-    obstacle->x_final = x2;
+    space->x_start = x1;
+    space->x_final = x1 +15;
 }
 
 typedef struct {
-    int num_obstacles;
+    int num_spaces;
     int speed;
-    Obstacle * obstacles;
+    Space * spaces;
 } Traffic;
 
 void new_Traffic(Traffic * traffic)
 {
-    traffic->num_obstacles = 1 + rand() % 5;
-    traffic->obstacles = malloc(sizeof(Obstacle) * traffic->num_obstacles);
+    traffic->num_spaces = 1 + rand() % 5;
+    traffic->spaces = malloc(sizeof(Space) * traffic->num_spaces);
     traffic->speed = 1 + rand() % 5;
     int i;
-    int tam_aux = 120 / traffic->num_obstacles;
+    int tam_aux = 30;
     int last_x = 0;
-    for (i = 0; i < traffic->num_obstacles; i++) {
-        last_x += rand() % tam_aux;
-        new_Obstacle(&traffic->obstacles[i], last_x, last_x + 15);
+    for (i = 0; i < traffic->num_spaces; i++) {
+        last_x += 10 +  rand() % tam_aux;
+        new_Space(&traffic->spaces[i], last_x);
     }
 }
 
-void describe_obstacle(Obstacle obstacle){
-    printf("%d <--> %d", obstacle.x_start, obstacle.x_final);
+
+void describe_space(Space space){
+    printf("%d <--> %d", space.x_start, space.x_final);
 }
 
 
@@ -43,8 +44,8 @@ void describe_traffic(Traffic traffic)
 {
     printf("speed: %d\n", traffic.speed);
     int i;
-    for (i = 0; i < traffic.num_obstacles; i++){
-        describe_obstacle(traffic.obstacles[i]);
+    for (i = 0; i < traffic.num_spaces; i++){
+        describe_space(traffic.spaces[i]);
         printf("  ");
     }
     printf("\n");

@@ -35,9 +35,11 @@ int reset_position_player(Player * player)
 
 int die(Player * player)
 {
-    player->lives --;
-    return player->lives;
+    reset_position_player(player);
+    return player->lives --;
 }
+
+
 
 int move_player_up(Player * player) {
     player->y = player->y + PLAYER_STEP;
@@ -53,6 +55,17 @@ int move_player_left(Player * player) {
 
 int move_player_right(Player * player) {
     player->x = player->x + PLAYER_STEP;
+}
+
+void move_player(int key, Player * player) {
+    FunctionMove function_move[4] = {
+        move_player_left,
+        move_player_up,
+        move_player_right,
+        move_player_down
+    };
+
+    (*(function_move[key]))(player);
 }
 
 void describe_player(Player player)

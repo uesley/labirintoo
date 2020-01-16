@@ -5,6 +5,8 @@
 //#include <GL/glut.h>
 #define LEVELS 8
 
+#define RESOLUTION 50
+
 /// COLORS
 float CorObstaculo[3] = { 0, 0, 1};
 float CorPlayer[3] = { 1, 0, 0};
@@ -29,12 +31,12 @@ void desenha_cenario(Traffic * traffics, int tam)
     int i;
     int j;
     Traffic traffic;
-    Obstacle obstacle;
+    Space space;
     set_color(CorObstaculo);
     for (i = 0; i < tam; i ++) {
         traffic = traffics[i];
-        for (j = 0; j < traffic.num_obstacles; j ++) {
-            desenha_retangulo(obstacle.x_start, obstacle.x_final, (i + 1) * 5);
+        for (j = 0; j < traffic.num_spaces; j ++) {
+            desenha_retangulo(space.x_start, space.x_final, (i + 1) * 5);
         }
     }
 }
@@ -71,29 +73,20 @@ void Desenha()
 //	MessageBox(NULL, mensagem, titulo,  MB_OK);
 //}
 
-// Fun��o callback chamada para gerenciar eventos de teclas
-void moves (int key, int x, int y)
-{
-    FunctionMove function_move[4] = {
-        move_player_left,
-        move_player_up,
-        move_player_right,
-        move_player_down
-    };
 
-    (*(function_move[key - GLUT_KEY_LEFT]))(&game.player);
-    	
-//	Desenha();
-//	if (colidiu()) {
-//		resetPlayerPosition();
-//		player.lives--;
-//		if (!player.lives){
-//			alerta("GAME OVER", ":(");
-//			exit(0);
-//		}
-//	}
-//	Desenha();
+
+// Fun��o callback chamada para gerenciar eventos de teclas
+void moves (int key)
+{
+    int GLUT_KEY_LEFT = 0;
+    move_player(key - GLUT_KEY_LEFT, &game.player);
+    Desenha();
+    if (colision(game) && !survive(&game)) {
+        game_over();
+    }
+    Desenha();
 }
+
 
 //void Mouse(int button, int state,int x, int y){
 //	int level = y/5;
@@ -118,15 +111,7 @@ void moves (int key, int x, int y)
 //	glutPostRedisplay();
 //}
 //
-//int colidiu()
-//{
-//	int level = player.y / 5;
-//	if (level % 2 == 0) {
-//		return 0;
-//	}
-//	
-//	return((obstaculos[level/2].x1 > player.x) || (obstaculos[level/2].x2 < player.x + 5));
-//}
+
 //
 //
 //void teclado (unsigned char key, int x, int y)
@@ -141,34 +126,32 @@ void moves (int key, int x, int y)
 //	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 //}
 
-// Programa Principal 
 
+int speed_min = 1;
+
+void Timer(int miliseconds, int i) 
+{
+    int K = RESOLUTION/(10 * game.level);
+    if (i >= K) {
+        move_scenario(&game, speed_min);
+        speed_min++;
+    }
+    
+    Desenha();//Tem outra função pra isso;
+//    Timer(1000/RESOLUTION, i++);
+}
+
+
+void game_over()
+{
+    exit(0);
+}
 
 int main()
 {
     new_Game(&game);
+
     
-    describe_player(game.player);
-    moves(0,0,0);
-    describe_player(game.player);
-    
-    moves(2,0,0);
-    describe_player(game.player);
-    
-    moves(1,0,0);
-    describe_player(game.player);
-    
-    moves(3,0,0);
-    describe_player(game.player);
-    
-    
-    
-//    describe_scenario(game);
-    
-    
-//	inicializaObstaculos();
-//
-//	inicializaPlayer();	
 //	// Define do modo de opera��o da GLUT
 //	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
 //
@@ -176,11 +159,11 @@ int main()
 //	glutInitWindowPosition(5,5); 
 //
 //	// Especifica o tamanho inicial em pixels da janela GLUT
-//	glutInitWindowSize(3*450,450); 
-// 	gluOrtho2D (0.0f, 40.0f, 0.0f, 40.0f);
+//	glutInitWindowSize(3*450,500); 
+// 	gluOrtho2D (0.0f, 45.0f, 0.0f, 40.0f);
 // 
 //	// Cria a janela passando como argumento o t�tulo da mesma
-//	glutCreateWindow("Labirintoo");
+//	glutCreateWindow("Labirintilt");
 //
 //	// Registra a fun��o callback de redesenho da janela de visualiza��o
 //	glutDisplayFunc(Desenha);
