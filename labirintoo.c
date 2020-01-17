@@ -31,15 +31,25 @@ void desenha_cenario(Traffic * traffics, int tam)
     int i;
     int j;
     Traffic traffic;
-    Space space;
+    Space * space;
+    Space inicio;
+    Space fim;
+    
     set_color(CorObstaculo);
+    
+    new_Space(&inicio, -15);
+    new_Space(&fim, 120);
+
     for (i = 0; i < tam; i ++) {
         traffic = traffics[i];
-        for (j = 1; j < traffic.num_spaces; j ++) {
-        	space = traffic.spaces[j];
-            desenha_retangulo(0, space.x_start, i * 10 + 5);
-			desenha_retangulo(space.x_final, 120, i * 10 + 5);
+        inicio.next = traffic.first_space;
+        for (space = &inicio, j = 0; j < traffic.num_spaces ; j++, space = space->next) {
+            if (space->x_final < 0 || space->x_start > 120) {
+                continue;
+            }
+            desenha_retangulo(space->x_final, space->next->x_start, 5 + i*10 );
         }
+        desenha_retangulo(space->x_final, 120, 5 + i*10 );
     }
 }
 
@@ -137,21 +147,20 @@ void Timer(int i)
     if (i >= K) {
     	describe_player(game.player);
 		describe_scenario(game);
-//    	system("pause");
     	
         move_scenario(&game, speed_min);
-//        speed_min++;
+        speed_min = (++speed_min) % 5;
+        i = 1;
     }
     
     glutPostRedisplay();
     Desenha();
-    glutTimerFunc(1000/RESOLUTION ,Timer, i + game.level);
+    glutTimerFunc(1000/RESOLUTION ,Timer, ++i + game.level);
 }
 
 int main()
-{
-    new_Game(&game);
-
+{	
+   new_Game(&game);
     
 	// Define do modo de opera��o da GLUT
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);

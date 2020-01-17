@@ -21,7 +21,7 @@ void new_Game(Game * game)
     int i;
     
     for (i = 0; i < STAGES / 2; i ++) {
-        new_Traffic(&(game->traffics[i]));    
+        new_Traffic(&(game->traffics[i]));
     }
 }
 
@@ -37,7 +37,7 @@ void describe_scenario(Game game)
 
 void move_scenario(Game * game, int speed_min) 
 {
-    int i;
+    int i,j;
     Space * space;
     Traffic traffic;
     for (i = 0; i < STAGES / 2; i ++) {
@@ -45,13 +45,14 @@ void move_scenario(Game * game, int speed_min)
             continue;
         }
         traffic = game->traffics[i];
-        for (space = traffic.first_space; space; space = space->next) {
+        for (space = traffic.first_space, j =0; j < traffic.num_spaces; j ++ , space = space->next) {
         	space->x_start++;
         	space->x_final++;
             if (space->x_start > 120) {
-                int pos = rand() % (120 / game->traffics[i].num_spaces);
-                game->traffics[i].spaces[j].x_final = -1 * pos;
-                game->traffics[i].spaces[j].x_start =  -1 * (pos +15);
+            	srand(time(NULL));
+                space->x_final = 0;
+                space->x_start = -15;
+                rotateTraffic(&(game->traffics[i]), space);
             }
         }
     }
@@ -59,14 +60,12 @@ void move_scenario(Game * game, int speed_min)
 }
 
 int colision(Game game) {
-    int stage = game.player.y / 10 -1;
-    Traffic traffic = game.traffics[stage/2];
-    Space space;
-    int i;
-    
-    for (i = 0; i < traffic.num_spaces; i++) {
-        space = traffic.spaces[i];
-        if ((game.player.x >space.x_start) && (game.player.x + 5 < space.x_final)) {
+    int stage = (game.player.y -5) / 5;
+    Traffic traffic = game.traffics[stage / 2];
+    Space * space;
+
+    for (space = traffic.first_space; space; space = space->next) {
+        if ((game.player.x > space->x_start) && (game.player.x + 5 < space->x_final)) {
             return 0;
         }
     }

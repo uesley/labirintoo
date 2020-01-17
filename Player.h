@@ -42,18 +42,30 @@ int die(Player * player)
 
 
 int move_player_up(Player * player) {
+	if (player->y > 35) {
+		return 0;
+	}
     player->y = player->y + PLAYER_STEP;
 }
 
 int move_player_down(Player * player) {
+	if (player->y <= 0) {
+		return 0;
+	}
     player->y = player->y - PLAYER_STEP;
 }
 
 int move_player_left(Player * player) {
+	if (player->x <= 0) {
+		return 0;
+	}
     player->x = player->x - PLAYER_STEP;
 }
 
 int move_player_right(Player * player) {
+	if (player->x >= 115) {
+		return 0;
+	}
     player->x = player->x + PLAYER_STEP;
 }
 
