@@ -8,8 +8,8 @@
 #define RESOLUTION 50
 
 /// COLORS
-float CorObstaculo[3] = { 0, 0, 1};
-float CorPlayer[3] = { 1, 0, 0};
+float CorObstaculo[4] = { 0, 0, 1, 1};
+float CorPlayer[4] = { 1, 0, 0, 1};
 Game game;
 
 void desenha_retangulo(int x1, int x2, int y)
@@ -22,8 +22,8 @@ void desenha_retangulo(int x1, int x2, int y)
 	glEnd();
 }
 
-void set_color(float color[3]) {
-    glColor3f(color[0], color[1], color[2]);
+void set_color(float color[4]) {
+    glColor4f(color[0], color[1], color[2], color[3]);
 }
 
 void desenha_cenario(Traffic * traffics, int tam)
@@ -54,6 +54,7 @@ void desenha_cenario(Traffic * traffics, int tam)
 }
 
 void desenha_player(Player player) {
+	CorPlayer[3] = 1.0 / (4 - player.lives);
     set_color(CorPlayer);
     desenha_retangulo(player.x, player.x + 5, player.y);
 }
@@ -173,6 +174,9 @@ int main()
  
 	// Cria a janela passando como argumento o t�tulo da mesma
 	glutCreateWindow("Labirintilt");
+	
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Registra a fun��o callback de redesenho da janela de visualiza��o
 	glutDisplayFunc(Desenha);
