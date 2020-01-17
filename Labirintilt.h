@@ -38,15 +38,17 @@ void describe_scenario(Game game)
 void move_scenario(Game * game, int speed_min) 
 {
     int i;
-    int j;
+    Space * space;
+    Traffic traffic;
     for (i = 0; i < STAGES / 2; i ++) {
         if (game->traffics[i].speed < speed_min) {
             continue;
         }
-        for (j = 0; j < game->traffics[i].num_spaces; j++) {
-            game->traffics[i].spaces[j].x_start++;
-            game->traffics[i].spaces[j].x_final++;
-            if (game->traffics[i].spaces[j].x_start >= 120) {
+        traffic = game->traffics[i];
+        for (space = traffic.first_space; space; space = space->next) {
+        	space->x_start++;
+        	space->x_final++;
+            if (space->x_start > 120) {
                 int pos = rand() % (120 / game->traffics[i].num_spaces);
                 game->traffics[i].spaces[j].x_final = -1 * pos;
                 game->traffics[i].spaces[j].x_start =  -1 * (pos +15);

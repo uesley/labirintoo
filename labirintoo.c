@@ -37,8 +37,8 @@ void desenha_cenario(Traffic * traffics, int tam)
         traffic = traffics[i];
         for (j = 1; j < traffic.num_spaces; j ++) {
         	space = traffic.spaces[j];
-            desenha_retangulo(0, space.x_start, (i + 1) * 5);
-			desenha_retangulo(space.x_final, 120, (i + 1) * 5);
+            desenha_retangulo(0, space.x_start, i * 10 + 5);
+			desenha_retangulo(space.x_final, 120, i * 10 + 5);
         }
     }
 }
@@ -81,14 +81,14 @@ void game_over()
 }
 
 // Fun��o callback chamada para gerenciar eventos de teclas
-void moves (int key)
+void moves (int key, int x, int y)
 {
     move_player(key - GLUT_KEY_LEFT, &game.player);
     Desenha();
-    if (colision(game) && !survive(&game)) {
-        game_over();
-    }
-    Desenha();
+//    if (colision(game) && !survive(&game)) {
+//        game_over();
+//    }
+//    Desenha();
 }
 
 
@@ -135,13 +135,16 @@ void Timer(int i)
     int K = RESOLUTION/(10 * game.level);
     printf("k: %d  i: %d", K,i);
     if (i >= K) {
-    	describe_scenario(game);
+    	describe_player(game.player);
+		describe_scenario(game);
+//    	system("pause");
+    	
         move_scenario(&game, speed_min);
-        speed_min++;
+//        speed_min++;
     }
     
-    Desenha();
     glutPostRedisplay();
+    Desenha();
     glutTimerFunc(1000/RESOLUTION ,Timer, i + game.level);
 }
 
