@@ -36,7 +36,7 @@ int reset_position_player(Player * player)
 int die(Player * player)
 {
     reset_position_player(player);
-    return player->lives --;
+    return --player->lives;
 }
 
 

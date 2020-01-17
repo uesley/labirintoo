@@ -95,9 +95,9 @@ void moves (int key, int x, int y)
 {
     move_player(key - GLUT_KEY_LEFT, &game.player);
     Desenha();
-//    if (colision(game) && !survive(&game)) {
-//        game_over();
-//    }
+    if (colision(game) && !survive(&game)) {
+        game_over();
+    }
 //    Desenha();
 }
 
@@ -143,11 +143,7 @@ int speed_min = 1;
 void Timer(int i) 
 {
     int K = RESOLUTION/(10 * game.level);
-    printf("k: %d  i: %d", K,i);
     if (i >= K) {
-    	describe_player(game.player);
-		describe_scenario(game);
-    	
         move_scenario(&game, speed_min);
         speed_min = (++speed_min) % 5;
         i = 1;
@@ -155,6 +151,9 @@ void Timer(int i)
     
     glutPostRedisplay();
     Desenha();
+     if (colision(game) && !survive(&game)) {
+        game_over();
+    }
     glutTimerFunc(1000/RESOLUTION ,Timer, ++i + game.level);
 }
 

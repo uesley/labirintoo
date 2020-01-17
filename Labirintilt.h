@@ -60,11 +60,15 @@ void move_scenario(Game * game, int speed_min)
 }
 
 int colision(Game game) {
-    int stage = (game.player.y -5) / 5;
+    int stage = (game.player.y) / 5;	
+    printf("\nstage: %d\n",stage);
+    if (stage % 2 == 0) {
+    	return 0;
+	}
     Traffic traffic = game.traffics[stage / 2];
     Space * space;
-
-    for (space = traffic.first_space; space; space = space->next) {
+	int count;
+    for (space = traffic.first_space, count = 0;count < traffic.num_spaces; count++, space = space->next) {
         if ((game.player.x > space->x_start) && (game.player.x + 5 < space->x_final)) {
             return 0;
         }
