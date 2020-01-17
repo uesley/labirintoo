@@ -31,7 +31,7 @@ int main ()
     test_create_traffic();
     test_create_game();
     test_move_player();
-    test_move_scenario();
+    test_move_scenario();;
     test_survive();
     test_creation_new_spaces();
 }
@@ -63,9 +63,9 @@ void test_create_traffic()
     new_Traffic(&traffic);
     
     assertGreaterThan(0, traffic.num_spaces);
-    int i;
-    for (i = 0; i < traffic.num_spaces; i++) {
-        assertEquals(traffic.spaces[i].x_start + 15, traffic.spaces[i].x_final);
+    Space * i;
+    for (i = traffic.spaces; i; i = i->next) {
+        assertEquals(i->x_start + 15, i->x_final);
     }
     printf("Create Traffic OK\n");
 }
@@ -178,12 +178,15 @@ void test_move_scenario()
 void test_colision()
 {
     Game game;
+//    printf("1\n\n");
     new_Game(&game);
-    new_Player(&game.player);
     
+    describe_traffic(game.traffics[0]);
     game.traffics[0].num_spaces = 1;
-    game.traffics[0].spaces[0].x_start = 50;
-    game.traffics[0].spaces[0].x_final = 60;
+//    printf("2\n\n");
+    game.traffics[0].first_space->x_start = 50;
+//    printf("3\n\n");
+    game.traffics[0].first_space->x_final = 60;
     
     game.player.y = 10;
     game.player.x = 48;
