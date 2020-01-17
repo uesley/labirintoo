@@ -69,7 +69,7 @@ int colision(Game game) {
     Space * space;
 	int count;
     for (space = traffic.first_space, count = 0;count < traffic.num_spaces; count++, space = space->next) {
-        if ((game.player.x > space->x_start) && (game.player.x + 5 < space->x_final)) {
+        if ((game.player.x >= space->x_start) && (game.player.x + 5 <= space->x_final)) {
             return 0;
         }
     }
@@ -78,6 +78,17 @@ int colision(Game game) {
 
 int survive(Game * game) {
     return die(&game->player);
+}
+
+void next_level(Game * game) {
+	game->level ++;
+	game->player.lives ++;
+	reset_position_player(&game->player);
+}
+
+int win(Game game) {
+	int stage = game.player.y / 5 + 1;
+	return stage == STAGES;
 }
 
 #endif /* LABIRINTILT_H */
