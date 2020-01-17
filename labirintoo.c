@@ -5,7 +5,7 @@
 #include <GL/glut.h>
 #define LEVELS 8
 
-#define RESOLUTION 50
+#define RESOLUTION 100
 
 /// COLORS
 float CorObstaculo[4] = { 0, 0, 1, 1};
@@ -103,10 +103,25 @@ void moves (int key, int x, int y)
     }
     if (win(game)) {
     	next_level(&game);
+    	muda_cor_fase();
 	}
 //    Desenha();
 }
 
+void muda_cor_fase() {
+	float vermelho = rand()/(float)RAND_MAX;
+	float verde = rand()/(float)RAND_MAX;
+	float azul = rand()/(float)RAND_MAX;
+	CorObstaculo[0] = vermelho;
+	CorObstaculo[1] = verde;
+	CorObstaculo[2] = azul;
+	
+	CorPlayer[0] = verde;
+	CorPlayer[1] = azul;
+	CorPlayer[2] = vermelho;
+	
+	glutPostRedisplay();
+}
 
 void Mouse(int button, int state,int x, int y){
 	int level = y/5;
@@ -160,7 +175,7 @@ void Timer(int i)
      if (colision(game) && !survive(&game)) {
         game_over();
     }
-    glutTimerFunc(1000/RESOLUTION ,Timer, ++i + game.level);
+    glutTimerFunc(1000/RESOLUTION ,Timer, i + game.level);
 }
 
 int main()
