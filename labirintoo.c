@@ -54,7 +54,9 @@ void desenha_cenario(Traffic * traffics, int tam)
 }
 
 void desenha_player(Player player) {
-	CorPlayer[3] = 1.0 / (4 - player.lives);
+	if (player.lives  < 4 ){
+		CorPlayer[3] = 1.0 / (4 - player.lives);
+	}
     set_color(CorPlayer);
     desenha_retangulo(player.x, player.x + 5, player.y);
 }
@@ -79,7 +81,7 @@ void AlteraTamanhoJanela(GLsizei w, GLsizei h)
 
 	// Estabelece a janela de sele��o (esquerda, direita, inferior, 
 	// superior)
-	gluOrtho2D (0.0f, 120.0f, 0.0f, 40.0f);
+	gluOrtho2D (0.0f, 120.0f, 0.0f, 45.0f);
 }
 
 void alerta(char* mensagem, char * titulo) {
@@ -99,6 +101,9 @@ void moves (int key, int x, int y)
     if (colision(game) && !survive(&game)) {
         game_over();
     }
+    if (win(game)) {
+    	next_level(&game);
+	}
 //    Desenha();
 }
 
@@ -170,7 +175,7 @@ int main()
 
 	// Especifica o tamanho inicial em pixels da janela GLUT
 	glutInitWindowSize(3*450,500); 
- 	gluOrtho2D (0.0f, 45.0f, 0.0f, 40.0f);
+// 	gluOrtho2D (0.0f, 45.0f, 0.0f, 45.0f);
  
 	// Cria a janela passando como argumento o t�tulo da mesma
 	glutCreateWindow("Labirintilt");
