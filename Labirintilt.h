@@ -57,14 +57,12 @@ void move_scenario(Game * game, int speed_min)
 }
 
 int colision(Game game) {
-    int stage = game.player.y / 10 -1;
-    Traffic traffic = game.traffics[stage/2];
-    Space space;
-    int i;
-    
-    for (i = 0; i < traffic.num_spaces; i++) {
-        space = traffic.spaces[i];
-        if ((game.player.x >space.x_start) && (game.player.x + 5 < space.x_final)) {
+    int stage = (game.player.y -5) / 5;
+    Traffic traffic = game.traffics[stage / 2];
+    Space * space;
+
+    for (space = traffic.spaces; space; space = space->next) {
+        if ((game.player.x > space->x_start) && (game.player.x + 5 < space->x_final)) {
             return 0;
         }
     }

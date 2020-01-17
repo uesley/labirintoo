@@ -26,18 +26,37 @@ void set_color(float color[3]) {
 //    glColor3f(color[0], color[1], color[2]);
 }
 
+void desenha_obstaculo(Space space1, Space space2)
+{
+    desenha_retangulo(space1.x_final, space2.x_start);
+}
+
+
 void desenha_cenario(Traffic * traffics, int tam)
 {
     int i;
-    int j;
     Traffic traffic;
     Space space;
+    Space inicio;
+    Space fim;
+    
     set_color(CorObstaculo);
+    
+    new_Space(&inicio, -15);
+    new_Space(&fim, 120);
+
     for (i = 0; i < tam; i ++) {
         traffic = traffics[i];
-        for (j = 0; j < traffic.num_spaces; j ++) {
-            desenha_retangulo(space.x_start, space.x_final, (i + 1) * 5);
+        printf("...");
+        inicio.next = traffic.first_space;
+        traffic->last_space->next = &fim;
+        for (space = &inicio; space; space = space->next) {
+            if (space->x_final < 0 || space->x_start > 120) {
+                continue;
+            }
+            desenha_obstaculo(space, space->next);
         }
+        traffic->last_space->next = NULL;
     }
 }
 
