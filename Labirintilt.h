@@ -61,7 +61,7 @@ void move_scenario(Game * game, int speed_min)
 
 int colision(Game game) {
     int stage = (game.player.y) / 5;	
-    printf("\nstage: %d\n",stage);
+//    printf("\nstage: %d\n",stage);
     if (stage % 2 == 0) {
     	return 0;
 	}
@@ -83,6 +83,7 @@ int survive(Game * game) {
 void next_level(Game * game) {
 	game->level ++;
 	game->player.lives ++;
+	describe_player(game->player);
 	reset_position_player(&game->player);
 }
 

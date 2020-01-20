@@ -90,6 +90,7 @@ void alerta(char* mensagem, char * titulo) {
 
 void game_over()
 {
+	alerta("Deu ruim, tente novamente", "Alerta");
     exit(0);
 }
 
@@ -116,9 +117,9 @@ void muda_cor_fase() {
 	CorObstaculo[1] = verde;
 	CorObstaculo[2] = azul;
 	
-	CorPlayer[0] = verde;
-	CorPlayer[1] = azul;
-	CorPlayer[2] = vermelho;
+//	CorPlayer[0] = verde;
+//	CorPlayer[1] = azul;
+//	CorPlayer[2] = vermelho;
 	
 	glutPostRedisplay();
 }
@@ -151,10 +152,8 @@ void teclado (unsigned char key, int x, int y)
 		exit(0);
 }
 
-// Fun��o respons�vel por inicializar par�metros e vari�veis
 void Inicializa (void)
 {   
-	// Define a cor de fundo da janela de visualiza��o como branca
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
@@ -182,13 +181,10 @@ int main()
 {	
    new_Game(&game);
     
-	// Define do modo de opera��o da GLUT
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
 
-	// Especifica a posi��o inicial da janela GLUT
 	glutInitWindowPosition(5,5); 
 
-	// Especifica o tamanho inicial em pixels da janela GLUT
 	glutInitWindowSize(3*450,500); 
 // 	gluOrtho2D (0.0f, 45.0f, 0.0f, 45.0f);
  
